@@ -1,0 +1,3 @@
+   <privapp-permissions package="com.miui.contentextension">
+      <permission name="android.permission.WRITE_SECURE_SETTINGS" />
+   </privapp-permissions>
