@@ -71,8 +71,8 @@ if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
   # 选择传送门的安装方式
   ui_print "*********************************************"
   ui_print "- 请选择传送门的安装方式？"
-  ui_print "  音量+ ：仅修补传送门权限"
-  ui_print "  音量- ：修补权限并固化传送门为系统应用"
+  ui_print "  音量+ ：仅修补传送门权限(不自动安装)"
+  ui_print "  音量- ：修补权限并固化传送门为系统应用(自动安装)"
   ui_print "*********************************************"
   key_check
   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
@@ -80,7 +80,7 @@ if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
     rm -rf "$MODPATH"/common/apks/MIUIContentExtension.apk
     patch_permissions "$MODPATH" "MIUIContentExtension"
     add_post_fs_data 'patch_permissions $MODDIR "MIUIContentExtension"'
-    ui_print "- 好诶，传送门权限修补完成，请自行通过[scene]或者[爱玩机工具箱]固化传送门~"
+    ui_print "- 好诶，传送门权限修补完成，请自行安装传送门并通过[scene]或者[爱玩机工具箱]固化传送门~"
   else
     ui_print "- 正在为你修补传送门的权限，请稍等~"
     patch_permissions "$MODPATH" "MIUIContentExtension"
@@ -152,16 +152,16 @@ if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
     add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
   fi
   ui_print "*********************************************"
-  ui_print "- 请选择的安装方式？"
-  ui_print "  音量+ ：仅修补小米教育中心权限"
-  ui_print "  音量- ：修补权限并固化小米教育中心为系统应用"
+  ui_print "- 请选择小米教育中心的安装方式？"
+  ui_print "  音量+ ：仅修补小米教育中心权限(不自动安装)"
+  ui_print "  音量- ：修补权限并固化小米教育中心为系统应用(自动安装)"
   ui_print "*********************************************"
   key_check
   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
     ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
     patch_permissions "$MODPATH" "kidspace"
     add_post_fs_data 'patch_permissions $MODDIR "kidspace"'
-    ui_print "- 好诶，小米教育中心权限修补完成，请自行通过[scene]或者[爱玩机工具箱]固化小米教育中心，重启系统后生效！"
+    ui_print "- 好诶，小米教育中心权限修补完成，请自行安装小米教育中心并通过[scene]或者[爱玩机工具箱]固化小米教育中心，重启系统后生效！"
   else
     ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
     patch_permissions "$MODPATH" "kidspace"
