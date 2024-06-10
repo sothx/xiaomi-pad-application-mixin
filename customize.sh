@@ -139,56 +139,58 @@ else
   ui_print "- 你选择不安装悬浮球！"
 fi
 
-ui_print "*********************************************"
-ui_print "- 是否安装小米教育中心？"
-ui_print "  音量+ ：是"
-ui_print "  音量- ：否"
-ui_print "*********************************************"
-key_check
-if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
-  if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
-    has_been_patch_privapp_permissions_product=1
-    patch_privapp_permissions_product $MODPATH
-    add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
-  fi
+if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
   ui_print "*********************************************"
-  ui_print "- 请选择小米教育中心的安装方式？"
-  ui_print "  音量+ ：仅修补小米教育中心权限(不自动安装)"
-  ui_print "  音量- ：修补权限并固化小米教育中心为系统应用(自动安装)"
+  ui_print "- 是否安装小米教育中心？"
+  ui_print "  音量+ ：是"
+  ui_print "  音量- ：否"
   ui_print "*********************************************"
   key_check
   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
-    ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
-    patch_permissions "$MODPATH" "kidspace"
-    add_post_fs_data 'patch_permissions $MODDIR "kidspace"'
-    ui_print "- 好诶，小米教育中心权限修补完成，请自行安装小米教育中心并通过[scene]或者[爱玩机工具箱]固化小米教育中心，重启系统后生效！"
-  else
-    ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
-    patch_permissions "$MODPATH" "kidspace"
-    add_post_fs_data 'patch_permissions $MODDIR "kidspace"'
-    ui_print "- 正在为你固化小米教育中心，请稍等~"
-    if [[ ! -d $MODPATH"/system/app/priv-app/com.xiaomi.kidspace/" ]]; then
-      mkdir -p $MODPATH"/system/app/priv-app/com.xiaomi.kidspace/"
+    if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
+      has_been_patch_privapp_permissions_product=1
+      patch_privapp_permissions_product $MODPATH
+      add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
     fi
-    cp -f $MODPATH/common/apks/kidspace.apk $MODPATH/system/app/priv-app/com.xiaomi.kidspace/base.apk
-    ui_print "- 正在为你安装小米教育中心，请稍等~"
-    unzip -jo "$ZIPFILE" 'common/apks/kidspace.apk' -d /data/local/tmp/ &>/dev/null
-    if [[ ! -f /data/local/tmp/kidspace.apk ]]; then
-      abort "- 坏诶，传送门安装失败，无法进行安装！"
+    ui_print "*********************************************"
+    ui_print "- 请选择小米教育中心的安装方式？"
+    ui_print "  音量+ ：仅修补小米教育中心权限(不自动安装)"
+    ui_print "  音量- ：修补权限并固化小米教育中心为系统应用(自动安装)"
+    ui_print "*********************************************"
+    key_check
+    if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+      ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
+      patch_permissions "$MODPATH" "kidspace"
+      add_post_fs_data 'patch_permissions $MODDIR "kidspace"'
+      ui_print "- 好诶，小米教育中心权限修补完成，请自行安装小米教育中心并通过[scene]或者[爱玩机工具箱]固化小米教育中心，重启系统后生效！"
     else
-      pm install -r /data/local/tmp/kidspace.apk &>/dev/null
-      rm -rf /data/local/tmp/kidspace.apk
-      rm -rf "$MODPATH"/common/apks/kidspace.apk
-      HAS_BEEN_INSTALLED_kidspace_APK=$(pm list packages | grep com.xiaomi.kidspace)
-      if [[ $HAS_BEEN_INSTALLED_kidspace_APK == *"package:com.xiaomi.kidspace"* ]]; then
-        ui_print "- 好诶，小米教育中心安装完成！"
+      ui_print "- 正在为你修补小米教育中心的权限，请稍等~"
+      patch_permissions "$MODPATH" "kidspace"
+      add_post_fs_data 'patch_permissions $MODDIR "kidspace"'
+      ui_print "- 正在为你固化小米教育中心，请稍等~"
+      if [[ ! -d $MODPATH"/system/product/priv-app/kidspace/" ]]; then
+        mkdir -p $MODPATH"/system/product/priv-app/kidspace/"
+      fi
+      cp -f $MODPATH/common/apks/kidspace.apk $MODPATH/system/product/priv-app/kidspace/kidspace.apk
+      ui_print "- 正在为你安装小米教育中心，请稍等~"
+      unzip -jo "$ZIPFILE" 'common/apks/kidspace.apk' -d /data/local/tmp/ &>/dev/null
+      if [[ ! -f /data/local/tmp/kidspace.apk ]]; then
+        abort "- 坏诶，小米教育中心安装失败，无法进行安装！"
       else
-        abort "- 坏诶，小米教育中心安装失败，请尝试重新安装！"
+        pm install -r /data/local/tmp/kidspace.apk &>/dev/null
+        rm -rf /data/local/tmp/kidspace.apk
+        rm -rf "$MODPATH"/common/apks/kidspace.apk
+        HAS_BEEN_INSTALLED_kidspace_APK=$(pm list packages | grep com.xiaomi.kidspace)
+        if [[ $HAS_BEEN_INSTALLED_kidspace_APK == *"package:com.xiaomi.kidspace"* ]]; then
+          ui_print "- 好诶，小米教育中心安装完成！"
+        else
+          abort "- 坏诶，小米教育中心安装失败，请尝试重新安装！"
+        fi
       fi
     fi
+  else
+    ui_print "- 你选择不安装小米教育中心！"
   fi
-else
-  ui_print "- 你选择不安装小米教育中心！"
 fi
 
 ui_print "*********************************************"
