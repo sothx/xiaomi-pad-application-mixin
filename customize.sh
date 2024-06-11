@@ -116,14 +116,11 @@ ui_print "  音量- ：否"
 ui_print "*********************************************"
 key_check
 if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
-  if [[ ! -d $MODPATH"/system/app/com.miui.touchassistant/" ]]; then
-    ui_print "- 正在为你固化悬浮球，请稍等~"
-    mkdir -p $MODPATH"/system/app/com.miui.touchassistant/"
-    if [[ ! -d $MODPATH"/system/app/com.miui.touchassistant/" ]]; then
-      mkdir -p $MODPATH"/system/app/com.miui.touchassistant/"
-    fi
-    cp -f $MODPATH/common/apks/MIUITouchAssistant.apk $MODPATH/system/app/com.miui.touchassistant/base.apk
+  ui_print "- 正在为你固化悬浮球，请稍等~"
+  if [[ ! -d $MODPATH"/system/product/app/MIUITouchAssistant/" ]]; then
+    mkdir -p $MODPATH"/system/product/app/MIUITouchAssistant/"
   fi
+  cp -f $MODPATH/common/apks/MIUITouchAssistant.apk $MODPATH/system/product/app/MIUITouchAssistant/MIUITouchAssistant.apk
   ui_print "- 正在为你安装悬浮球，请稍等~"
   unzip -jo "$ZIPFILE" 'common/apks/MIUITouchAssistant.apk' -d /data/local/tmp/ &>/dev/null
   pm install -r /data/local/tmp/MIUITouchAssistant.apk &>/dev/null
