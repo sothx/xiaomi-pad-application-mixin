@@ -30,6 +30,10 @@ if [[ -d $magisk_path"xiaomi-pad-hyper-content-extension" ]]; then
   abort "*********************************************"
 fi
 
+# 重置缓存
+rm -rf /data/system/package_cache
+rm -rf /data/resource-cache
+
 key_check() {
   while true; do
     key_check=$(/system/bin/getevent -qlc 1)
