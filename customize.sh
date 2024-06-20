@@ -66,7 +66,7 @@ ui_print "  音量- ：否"
 ui_print "*********************************************"
 key_check
 if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
-  # 检查权限文件是否拷贝
+  # 拷贝权限文件
   if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
     has_been_patch_privapp_permissions_product=1
     patch_privapp_permissions_product $MODPATH
@@ -148,6 +148,7 @@ if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
   ui_print "*********************************************"
   key_check
   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+    # 拷贝权限文件
     if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
       has_been_patch_privapp_permissions_product=1
       patch_privapp_permissions_product $MODPATH
@@ -191,6 +192,37 @@ if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
     fi
   else
     ui_print "- 你选择不安装小米教育中心！"
+  fi
+fi
+
+HAS_BEEN_INSTALLED_Security_Center_APK=$(dumpsys package com.miui.securitycenter | grep com.miui.securitycenter | awk -F= '{print $2}')
+if [[ "$API" -ge 34 && "$HAS_BEEN_INSTALLED_Security_Center_APK" == "9.9.9-240619.0.1"  ]]; then
+  ui_print "*********************************************"
+  ui_print "- 是否修补修改版手机管家？（可以使用全局侧边栏）"
+  ui_print "- [重要提醒]: 请确保已激活"核心破解"，否则重启后会卡米！"
+  ui_print "  音量+ ：是"
+  ui_print "  音量- ：否"
+  ui_print "*********************************************"
+  key_check
+  if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+    # 拷贝权限文件
+    if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
+      has_been_patch_privapp_permissions_product=1
+      patch_privapp_permissions_product $MODPATH
+      add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
+    fi
+    ui_print "- 正在为你修补修改版手机管家的权限，请稍等~"
+    patch_secure_center_permissions "$MODPATH"
+    add_post_fs_data 'patch_secure_center_permissions $MODDIR'
+    ui_print "- 正在为你固化修改版手机管家，请稍等~"
+    if [[ ! -d $MODPATH"/system/product/priv-app/MIUISecurityCenterPad/" ]]; then
+      mkdir -p $MODPATH"/system/product/priv-app/MIUISecurityCenterPad/"
+    fi
+    cp -f $MODPATH/common/apks/MIUISecurityCenterPad.apk $MODPATH/system/product/priv-app/MIUISecurityCenterPad/MIUISecurityCenterPad.apk
+    rm -rf "$MODPATH"/common/apks/MIUISecurityCenterPad.apk
+    ui_print "- 好诶，修改版手机管家修补完成！"
+  else
+    ui_print "- 你选择不修补修改版手机管家！"
   fi
 fi
 

@@ -52,3 +52,13 @@ remove_system_prop() {
   local file="$2"
   sed -i "/^$prop=/d" "$file"
 }
+
+
+patch_secure_center_permissions() {
+  MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH=$1"/system/product/etc/permissions/privapp-permissions-product.xml"
+  if [[ -f "$MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH" ]]; then
+    # 补全手机管家权限
+    sed -i "$(awk '/<privapp-permissions package="com.miui.securitycenter">/{print NR+1; exit}' $MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH)i \    \  <permission name=\"android.permission.SYSTEM_ALERT_WINDOW\" />" $MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH
+    sed -i "$(awk '/<privapp-permissions package="com.miui.securitycenter">/{print NR+1; exit}' $MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH)i \    \  <permission name=\"android.permission.WRITE_SECURE_SETTINGS\" />" $MODULE_PRIVAPP_PERMISSION_PRODUCT_PATH
+  fi
+}
