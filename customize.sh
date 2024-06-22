@@ -195,7 +195,7 @@ if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
   fi
 fi
 
-HAS_BEEN_INSTALLED_Security_Center_APK=$(dumpsys package com.miui.securitycenter | grep versionName | grep '9.9.9-240619.0.1' | awk -F= '{print $2}')
+HAS_BEEN_INSTALLED_Security_Center_APK=$(dumpsys package com.miui.securitycenter | grep versionName | grep '9.9.9-240621.0.1' | awk -F= '{print $2}')
 if [[ "$API" -eq 34 && "$HAS_BEEN_INSTALLED_Security_Center_APK" == "9.9.9-240621.0.1"  ]]; then
   ui_print "*********************************************"
   ui_print "- 是否修补修改版手机管家？（可以使用全局侧边栏）"
