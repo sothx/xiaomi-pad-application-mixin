@@ -5,7 +5,7 @@ SKIPUNZIP=0
 magisk_path=/data/adb/modules/
 module_id=$(grep_prop id $MODPATH/module.prop)
 has_been_patch_privapp_permissions_product=0
-
+get_build_characteristics=$(getprop ro.build.characteristics)
 if [[ "$KSU" == "true" ]]; then
   ui_print "- KernelSU 用户空间当前的版本号: $KSU_VER_CODE"
   ui_print "- KernelSU 内核空间当前的版本号: $KSU_KERNEL_VER_CODE"
@@ -98,13 +98,16 @@ if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
     if [[ ! -f /data/local/tmp/MIUIContentExtension.apk ]]; then
       abort "- 坏诶，传送门安装失败，无法进行安装！"
     else
+      pm disable-user com.miui.securityadd &>/dev/null
       pm install -r /data/local/tmp/MIUIContentExtension.apk &>/dev/null
       rm -rf /data/local/tmp/MIUIContentExtension.apk
       rm -rf "$MODPATH"/common/apks/MIUIContentExtension.apk
       HAS_BEEN_INSTALLED_MIUIContentExtension_APK=$(pm list packages | grep com.miui.contentextension)
       if [[ $HAS_BEEN_INSTALLED_MIUIContentExtension_APK == *"package:com.miui.contentextension"* ]]; then
+        pm enable com.miui.securityadd &>/dev/null
         ui_print "- 好诶，传送门安装完成！"
       else
+        pm enable com.miui.securityadd &>/dev/null
         abort "- 坏诶，传送门安装失败，请尝试重新安装！"
       fi
     fi
@@ -194,6 +197,132 @@ if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
     ui_print "- 你选择不安装小米教育中心！"
   fi
 fi
+
+# ui_print "*********************************************"
+# ui_print "- 是否修补搜索的权限？"
+# ui_print "  音量+ ：是"
+# ui_print "  音量- ：否"
+# ui_print "*********************************************"
+# key_check
+# if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+#   ui_print "- 正在为你修补搜索的权限，请稍等~"
+#   patch_permissions "$MODPATH" "QuickSearchBoxPadMIUI15"
+#   add_post_fs_data 'patch_permissions $MODDIR "QuickSearchBoxPadMIUI15"'
+#   ui_print "- 好诶，搜索权限修补完成，重启系统后生效！"
+# else
+#   ui_print "- 你选择不修补搜索的权限！"
+# fi
+
+# 短信
+# if [[ ! -f "/system/product/priv-app/MIUIMms_FOLD/MIUIMms_FOLD.apk" && "$get_build_characteristics" = "tablet" && "$API" -eq 34 ]]; then
+#   ui_print "*********************************************"
+#   ui_print "- 是否安装短信？"
+#   ui_print "  音量+ ：是"
+#   ui_print "  音量- ：否"
+#   ui_print "*********************************************"
+#   key_check
+#   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+#     # 拷贝权限文件
+#     if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
+#       has_been_patch_privapp_permissions_product=1
+#       patch_privapp_permissions_product $MODPATH
+#       add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
+#     fi
+#     ui_print "*********************************************"
+#     ui_print "- 请选择短信的安装方式？"
+#     ui_print "  音量+ ：仅修补短信权限(不自动安装)"
+#     ui_print "  音量- ：修补权限并固化短信为系统应用(自动安装)"
+#     ui_print "*********************************************"
+#     key_check
+#     if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+#       ui_print "- 正在为你修补短信的权限，请稍等~"
+#       patch_permissions "$MODPATH" "MIUIMms_FOLD"
+#       add_post_fs_data 'patch_permissions $MODDIR "MIUIMms_FOLD"'
+#       ui_print "- 好诶，短信的权限修补完成，请自行安装短信并通过[scene]或者[爱玩机工具箱]固化短信，重启系统后生效！"
+#     else
+#       ui_print "- 正在为你修补短信的权限，请稍等~"
+#       patch_permissions "$MODPATH" "MIUIMms_FOLD"
+#       add_post_fs_data 'patch_permissions $MODDIR "MIUIMms_FOLD"'
+#       ui_print "- 正在为你固化短信，请稍等~"
+#       if [[ ! -d $MODPATH"/system/product/priv-app/MIUIMms_FOLD/" ]]; then
+#         mkdir -p $MODPATH"/system/product/priv-app/MIUIMms_FOLD/"
+#       fi
+#       cp -f $MODPATH/common/apks/MIUIMms_FOLD.apk $MODPATH/system/product/priv-app/MIUIMms_FOLD/MIUIMms_FOLD.apk
+#       ui_print "- 正在为你安装短信，请稍等~"
+#       unzip -jo "$ZIPFILE" 'common/apks/MIUIMms_FOLD.apk' -d /data/local/tmp/ &>/dev/null
+#       if [[ ! -f /data/local/tmp/MIUIMms_FOLD.apk ]]; then
+#         abort "- 坏诶，短信安装失败，无法进行安装！"
+#       else
+#         pm install -r /data/local/tmp/MIUIMms_FOLD.apk &>/dev/null
+#         rm -rf /data/local/tmp/MIUIMms_FOLD.apk
+#         rm -rf "$MODPATH"/common/apks/MIUIMms_FOLD.apk
+#         HAS_BEEN_INSTALLED_MIUIMms_FOLD_APK=$(pm list packages | grep "^package:com.android.mms$")
+#         if [[ $HAS_BEEN_INSTALLED_MIUIMms_FOLD_APK ]]; then
+#           ui_print "- 好诶，短信安装完成！"
+#         else
+#           abort "- 坏诶，短信安装失败，请尝试重新安装！"
+#         fi
+#       fi
+#     fi
+#   else
+#     ui_print "- 你选择不安装短信！"
+#   fi
+# fi
+
+# if [[ ! -f "/system/product/priv-app/MIUIContactsT/MIUIContactsT.apk" && "$get_build_characteristics" = "tablet" && "$API" -eq 34 ]]; then
+#   ui_print "*********************************************"
+#   ui_print "- 是否安装通讯录与拨号？"
+#   ui_print "  音量+ ：是"
+#   ui_print "  音量- ：否"
+#   ui_print "*********************************************"
+#   key_check
+#   if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+#     # 拷贝权限文件
+#     if [[ "$has_been_patch_privapp_permissions_product" == 0 ]]; then
+#       has_been_patch_privapp_permissions_product=1
+#       patch_privapp_permissions_product $MODPATH
+#       add_post_fs_data 'patch_privapp_permissions_product $MODDIR'
+#     fi
+#     ui_print "*********************************************"
+#     ui_print "- 请选择通讯录与拨号的安装方式？"
+#     ui_print "  音量+ ：仅修补通讯录与拨号权限(不自动安装)"
+#     ui_print "  音量- ：修补权限并固化通讯录与拨号为系统应用(自动安装)"
+#     ui_print "*********************************************"
+#     key_check
+#     if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+#       ui_print "- 正在为你修补通讯录与拨号的权限，请稍等~"
+#       patch_permissions "$MODPATH" "MIUIContactsT"
+#       add_post_fs_data 'patch_permissions $MODDIR "MIUIContactsT"'
+#       ui_print "- 好诶，通讯录与拨号的权限修补完成，请自行安装通讯录与拨号并通过[scene]或者[爱玩机工具箱]固化通讯录与拨号，重启系统后生效！"
+#     else
+#       ui_print "- 正在为你修补通讯录与拨号的权限，请稍等~"
+#       patch_permissions "$MODPATH" "MIUIContactsT"
+#       add_post_fs_data 'patch_permissions $MODDIR "MIUIContactsT"'
+#       ui_print "- 正在为你固化通讯录与拨号，请稍等~"
+#       if [[ ! -d $MODPATH"/system/product/priv-app/MIUIContactsT/" ]]; then
+#         mkdir -p $MODPATH"/system/product/priv-app/MIUIContactsT/"
+#       fi
+#       cp -f $MODPATH/common/apks/MIUIMms_FOLD.apk $MODPATH/system/product/priv-app/MIUIContactsT/MIUIContactsT.apk
+#       ui_print "- 正在为你安装通讯录与拨号，请稍等~"
+#       unzip -jo "$ZIPFILE" 'common/apks/MIUIContactsT.apk' -d /data/local/tmp/ &>/dev/null
+#       if [[ ! -f /data/local/tmp/MIUIContactsT.apk ]]; then
+#         abort "- 坏诶，通讯录与拨号安装失败，无法进行安装！"
+#       else
+#         pm install -r /data/local/tmp/MIUIContactsT.apk &>/dev/null
+#         rm -rf /data/local/tmp/MIUIContactsT.apk
+#         rm -rf "$MODPATH"/common/apks/MIUIContactsT.apk
+#         HAS_BEEN_INSTALLED_MIUIContactsT_APK=$(pm list packages | grep "^package:com.android.contacts$")
+#         if [[ $HAS_BEEN_INSTALLED_MIUIContactsT_APK ]]; then
+#           ui_print "- 好诶，通讯录与拨号安装完成！"
+#         else
+#           abort "- 坏诶，通讯录与拨号安装失败，请尝试重新安装！"
+#         fi
+#       fi
+#     fi
+#   else
+#     ui_print "- 你选择不安装短信！"
+#   fi
+# fi
 
 # HAS_BEEN_INSTALLED_Security_Center_APK=$(dumpsys package com.miui.securitycenter | grep versionName | grep '9.9.9-240621.0.1' | awk -F= '{print $2}')
 # if [[ "$API" -eq 34 && "$HAS_BEEN_INSTALLED_Security_Center_APK" == "9.9.9-240621.0.1"  ]]; then
