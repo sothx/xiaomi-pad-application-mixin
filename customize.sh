@@ -98,16 +98,13 @@ if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
     if [[ ! -f /data/local/tmp/MIUIContentExtension.apk ]]; then
       abort "- 坏诶，传送门安装失败，无法进行安装！"
     else
-      pm disable-user com.miui.securityadd &>/dev/null
       pm install -r /data/local/tmp/MIUIContentExtension.apk &>/dev/null
       rm -rf /data/local/tmp/MIUIContentExtension.apk
       rm -rf "$MODPATH"/common/apks/MIUIContentExtension.apk
       HAS_BEEN_INSTALLED_MIUIContentExtension_APK=$(pm list packages | grep com.miui.contentextension)
       if [[ $HAS_BEEN_INSTALLED_MIUIContentExtension_APK == *"package:com.miui.contentextension"* ]]; then
-        pm enable com.miui.securityadd &>/dev/null
         ui_print "- 好诶，传送门安装完成！"
       else
-        pm enable com.miui.securityadd &>/dev/null
         abort "- 坏诶，传送门安装失败，请尝试重新安装！"
       fi
     fi
