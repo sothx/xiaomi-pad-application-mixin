@@ -9,11 +9,40 @@ get_build_characteristics=$(getprop ro.build.characteristics)
 if [[ "$KSU" == "true" ]]; then
   ui_print "- KernelSU 用户空间当前的版本号: $KSU_VER_CODE"
   ui_print "- KernelSU 内核空间当前的版本号: $KSU_KERNEL_VER_CODE"
+  if [ "$KSU_VER_CODE" -lt 11551 ]; then
+    ui_print "*********************************************"
+    ui_print "- 请更新 KernelSU 到 v0.8.0+ ！"
+    abort "*********************************************"
+  fi
+elif [[ "$APATCH" == "true" ]]; then
+  ui_print "- APatch 当前的版本号: $APATCH_VER_CODE"
+  ui_print "- APatch 当前的版本名: $APATCH_VER"
+  ui_print "- KernelPatch 用户空间当前的版本号: $KERNELPATCH_VERSION"
+  ui_print "- KernelPatch 内核空间当前的版本号: $KERNEL_VERSION"
+  if [ "$APATCH_VER_CODE" -lt 10568 ]; then
+    ui_print "*********************************************"
+    ui_print "- 请更新 APatch 到 10568+ ！"
+    abort "*********************************************"
+  fi
 else
   ui_print "- Magisk 版本: $MAGISK_VER_CODE"
   if [ "$MAGISK_VER_CODE" -lt 26000 ]; then
     ui_print "*********************************************"
-    ui_print "! 请安装 Magisk 26.0+"
+    ui_print "- 模块当前仅支持 Magisk 26.0+ 请更新 Magisk！"
+    ui_print "- 您可以选择继续安装，但可能导致部分模块功能无法正常使用，是否继续？"
+    ui_print "  音量+ ：已了解，继续安装"
+    ui_print "  音量- ：否"
+    ui_print "*********************************************"
+    key_check
+    if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+      ui_print "*********************************************"
+      ui_print "- 你选择无视Magisk低版本警告，可能导致部分模块功能无法正常使用！！！"
+      ui_print "*********************************************"
+    else
+      ui_print "*********************************************"
+      ui_print "- 请更新 Magisk 到 26.0+ ！"
+      abort "*********************************************"
+    fi
     abort "*********************************************"
   fi
 fi
@@ -31,7 +60,7 @@ if [[ -d $magisk_path"xiaomi-pad-hyper-content-extension" ]]; then
 fi
 
 # 重置缓存
-# rm -rf /data/system/package_cache
+rm -rf /data/system/package_cache
 # rm -rf /data/resource-cache
 
 key_check() {
