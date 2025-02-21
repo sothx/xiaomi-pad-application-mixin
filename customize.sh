@@ -47,6 +47,30 @@ else
   fi
 fi
 
+# 重置缓存
+rm -rf /data/system/package_cache
+# rm -rf /data/resource-cache
+
+key_check() {
+  while true; do
+    key_check=$(/system/bin/getevent -qlc 1)
+    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
+    key_status=$(echo "$key_check" | awk '{ print $4 }')
+    if [[ "$key_event" == *"KEY_"* && "$key_status" == "DOWN" ]]; then
+      keycheck="$key_event"
+      break
+    fi
+  done
+  while true; do
+    key_check=$(/system/bin/getevent -qlc 1)
+    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
+    key_status=$(echo "$key_check" | awk '{ print $4 }')
+    if [[ "$key_event" == *"KEY_"* && "$key_status" == "UP" ]]; then
+      break
+    fi
+  done
+}
+
 if [[ -d "$magisk_path$module_id" ]]; then
   ui_print "*********************************************"
   ui_print "模块不支持覆盖更新，请卸载模块并重启平板后再尝试安装！"
@@ -72,30 +96,6 @@ if [[ -d $magisk_path"xiaomi-pad-hyper-content-extension" ]]; then
   ui_print "存在互斥模块[HyperOS For Pad 传送门补丁]，请卸载模块并重启平板后再尝试安装！"
   abort "*********************************************"
 fi
-
-# 重置缓存
-rm -rf /data/system/package_cache
-# rm -rf /data/resource-cache
-
-key_check() {
-  while true; do
-    key_check=$(/system/bin/getevent -qlc 1)
-    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
-    key_status=$(echo "$key_check" | awk '{ print $4 }')
-    if [[ "$key_event" == *"KEY_"* && "$key_status" == "DOWN" ]]; then
-      keycheck="$key_event"
-      break
-    fi
-  done
-  while true; do
-    key_check=$(/system/bin/getevent -qlc 1)
-    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
-    key_status=$(echo "$key_check" | awk '{ print $4 }')
-    if [[ "$key_event" == *"KEY_"* && "$key_status" == "UP" ]]; then
-      break
-    fi
-  done
-}
 
 add_post_fs_data() {
   local line="$1"
