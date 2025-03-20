@@ -157,32 +157,24 @@ else
   ui_print "- 你选择不安装传送门！"
 fi
 
-ui_print "*********************************************"
-ui_print "- 是否安装悬浮球？"
-ui_print "  音量+ ：是"
-ui_print "  音量- ：否"
-ui_print "*********************************************"
-key_check
-if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
-  ui_print "- 正在为你固化悬浮球，请稍等~"
-  if [[ ! -d $MODPATH"/system/product/app/MIUITouchAssistant/" ]]; then
-    mkdir -p $MODPATH"/system/product/app/MIUITouchAssistant/"
+if [[ -d "$MODPATH/common/apks/MIUITouchAssistant/$API/" ]]; then
+  ui_print "*********************************************"
+  ui_print "- 是否安装悬浮球？"
+  ui_print "  音量+ ：是"
+  ui_print "  音量- ：否"
+  ui_print "*********************************************"
+  key_check
+  if [[ "$keycheck" == "KEY_VOLUMEUP" ]]; then
+    ui_print "- 正在为你固化悬浮球，请稍等~"
+    if [[ ! -d $MODPATH"/system/product/app/MIUITouchAssistant/" ]]; then
+      mkdir -p $MODPATH"/system/product/app/MIUITouchAssistant/"
+    fi
+    cp -f $MODPATH/common/apks/MIUITouchAssistant/$API/MIUITouchAssistant.apk $MODPATH/system/product/app/MIUITouchAssistant/MIUITouchAssistant.apk
+    ui_print "- 好诶，悬浮球安装完成！"
+    ui_print "- 如果不生效请手动重新安装一次悬浮球的安装包！"
+  else
+    ui_print "- 你选择不安装悬浮球！"
   fi
-  cp -f $MODPATH/common/apks/MIUITouchAssistant.apk $MODPATH/system/product/app/MIUITouchAssistant/MIUITouchAssistant.apk
-  ui_print "- 好诶，悬浮球安装完成！"
-  # ui_print "- 正在为你安装悬浮球，请稍等~"
-  # unzip -jo "$ZIPFILE" 'common/apks/MIUITouchAssistant.apk' -d /data/local/tmp/ &>/dev/null
-  # pm install -r /data/local/tmp/MIUITouchAssistant.apk &>/dev/null
-  # rm -rf /data/local/tmp/MIUITouchAssistant.apk
-  # rm -rf "$MODPATH"/common/apks/MIUITouchAssistant.apk
-  # HAS_BEEN_INSTALLED_MIUITouchAssistant_APK=$(pm list packages | grep com.miui.touchassistant)
-  # if [[ $HAS_BEEN_INSTALLED_MIUITouchAssistant_APK == *"package:com.miui.touchassistant"* ]]; then
-  #   ui_print "- 好诶，悬浮球安装完成！"
-  # else
-  #   abort "- 坏诶，悬浮球安装失败，请尝试重新安装！"
-  # fi
-else
-  ui_print "- 你选择不安装悬浮球！"
 fi
 
 if [[ ! -f "/system/product/priv-app/kidspace/kidspace.apk" ]]; then
@@ -365,7 +357,6 @@ fi
 #     ui_print "- 你选择不安装短信！"
 #   fi
 # fi
-
 
 ui_print "*********************************************"
 ui_print "- 好诶w，模块已经安装完成了，重启平板后生效"
