@@ -1,3 +1,4 @@
    <privapp-permissions package="com.miui.contentextension">
       <permission name="android.permission.WRITE_SECURE_SETTINGS" />
+      <permission name="android.permission.READ_CLIPBOARD_IN_BACKGROUND" />
    </privapp-permissions>
