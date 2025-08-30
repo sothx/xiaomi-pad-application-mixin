@@ -1,6 +1,6 @@
 id=xiaomi-pad-application-mixin
 name=小米平板系统应用补全
-version=1.19.07
-versionCode=119007
+version=1.19.08
+versionCode=119008
 author=做梦书
 description=用于 Hyper OS For Pad 下补全传送门、悬浮球，传送门需搭配使用[完美横屏应用计划 Web UI]开启传送门配置入口。(反馈模块问题可前往酷安私信 @做梦书 或者Github:https://github.com/sothx/xiaomi-pad-application-mixin)
